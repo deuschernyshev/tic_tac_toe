@@ -57,26 +57,44 @@ class _HomeScreenState extends State<HomeScreen> {
             children: <Widget>[
               ..._values.mapIndexed(
                 (columnIndex, row) => Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      ...row.mapIndexed(
-                        (rowIndex, cellValue) => Expanded(
-                          child: CellButton(
-                            onPressed: _cellHasValue(columnIndex, rowIndex)
-                                ? null
-                                : () {
-                                    _makeTurn(
-                                      value: _currentSign,
-                                      columnIndex: columnIndex,
-                                      rowIndex: rowIndex,
-                                    );
-                                  },
-                            value: cellValue,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        top: columnIndex == 0
+                            ? BorderSide.none
+                            : const BorderSide(),
+                      ),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        ...row.mapIndexed(
+                          (rowIndex, cellValue) => Expanded(
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  left: rowIndex == 0
+                                      ? BorderSide.none
+                                      : const BorderSide(),
+                                ),
+                              ),
+                              child: CellButton(
+                                onPressed: _cellHasValue(columnIndex, rowIndex)
+                                    ? null
+                                    : () {
+                                        _makeTurn(
+                                          value: _currentSign,
+                                          columnIndex: columnIndex,
+                                          rowIndex: rowIndex,
+                                        );
+                                      },
+                                value: cellValue,
+                              ),
+                            ),
                           ),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -16,9 +16,7 @@ class CellButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border.all(),
-        ),
+        decoration: const BoxDecoration(),
         child: Center(
           child: AnimatedOpacity(
             opacity: value != CellValue.none ? 1 : 0,
