@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shake/shake.dart';
@@ -14,7 +13,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late final ShakeDetector shakeDetector;
-  late List<List<CellValue>> _values;
+  late List<CellValue> _values;
 
   CellValue _currentSign = CellValue.cross;
 
@@ -51,73 +50,50 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Center(
         child: SizedBox(
           height: MediaQuery.of(context).size.height / 2,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              ..._values.mapIndexed(
-                (columnIndex, row) => Expanded(
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        top: columnIndex == 0
-                            ? BorderSide.none
-                            : const BorderSide(),
-                      ),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        ...row.mapIndexed(
-                          (rowIndex, cellValue) => Expanded(
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  left: rowIndex == 0
-                                      ? BorderSide.none
-                                      : const BorderSide(),
-                                ),
-                              ),
-                              child: CellButton(
-                                onPressed: _cellHasValue(columnIndex, rowIndex)
-                                    ? null
-                                    : () {
-                                        _makeTurn(
-                                          value: _currentSign,
-                                          columnIndex: columnIndex,
-                                          rowIndex: rowIndex,
-                                        );
-                                      },
-                                value: cellValue,
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+            ),
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _values.length,
+            itemBuilder: (context, index) {
+              return DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: index < 3 ? BorderSide.none : const BorderSide(),
+                    left: index == 0 ? BorderSide.none : const BorderSide(),
                   ),
                 ),
-              ),
-            ],
+                child: CellButton(
+                  onPressed: _cellHasValue(index)
+                      ? null
+                      : () {
+                          _makeTurn(
+                            value: _currentSign,
+                            index: index,
+                          );
+                        },
+                  value: _values[index],
+                ),
+              );
+            },
           ),
         ),
       ),
     );
   }
 
-  bool _cellHasValue(int columnIndex, int rowIndex) {
-    return _values[columnIndex][rowIndex] != CellValue.none;
+  bool _cellHasValue(int index) {
+    return _values[index] != CellValue.none;
   }
 
   void _makeTurn({
     required CellValue value,
-    required int columnIndex,
-    required int rowIndex,
+    required int index,
   }) {
     _setValueInCell(
       value: value,
-      columnIndex: columnIndex,
-      rowIndex: rowIndex,
+      index: index,
     );
 
     _swapCurrentSign();
@@ -125,11 +101,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _setValueInCell({
     required CellValue value,
-    required int columnIndex,
-    required int rowIndex,
+    required int index,
   }) {
     setState(() {
-      _values[columnIndex][rowIndex] = value;
+      _values[index] = value;
     });
   }
 
@@ -170,13 +145,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _reset() {
     setState(() {
-      _values = [
-        List.filled(3, CellValue.none),
-        List.filled(3, CellValue.none),
-        List.filled(3, CellValue.none),
-      ];
+      _values = List.filled(9, CellValue.none);
 
       _currentSign = CellValue.cross;
     });
+  }
+
+  CellValue? _checkWinner() {
+    CellValue? winner;
+
+    return winner;
   }
 }
