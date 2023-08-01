@@ -10,4 +10,10 @@ extension CellValueX on CellValue {
         CellValue.zero => 'O',
         CellValue.none => '',
       };
+
+  String get valueName => switch (this) {
+        CellValue.cross => 'Крестики',
+        CellValue.zero => 'Нолики',
+        CellValue.none => '',
+      };
 }
