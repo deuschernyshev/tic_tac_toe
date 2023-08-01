@@ -16,6 +16,18 @@ class _HomeScreenState extends State<HomeScreen> {
   late List<CellValue> _values;
 
   CellValue _currentSign = CellValue.cross;
+  CellValue? _winner;
+
+  final List<List<int>> _winnerIndexes = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
 
   @override
   void initState() {
@@ -57,23 +69,19 @@ class _HomeScreenState extends State<HomeScreen> {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: _values.length,
             itemBuilder: (context, index) {
-              return DecoratedBox(
-                decoration: BoxDecoration(
-                  border: Border(
-                    top: index < 3 ? BorderSide.none : const BorderSide(),
-                    left: index == 0 ? BorderSide.none : const BorderSide(),
-                  ),
-                ),
-                child: CellButton(
-                  onPressed: _cellHasValue(index)
-                      ? null
-                      : () {
-                          _makeTurn(
-                            value: _currentSign,
-                            index: index,
-                          );
-                        },
-                  value: _values[index],
+              return CellButton(
+                value: _values[index],
+                onPressed: _cellHasValue(index)
+                    ? null
+                    : () {
+                        _makeTurn(
+                          value: _currentSign,
+                          index: index,
+                        );
+                      },
+                border: Border(
+                  top: index < 3 ? BorderSide.none : const BorderSide(),
+                  left: index == 0 ? BorderSide.none : const BorderSide(),
                 ),
               );
             },
@@ -97,6 +105,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     _swapCurrentSign();
+    _setWinner();
+    _showEndGameAlert();
   }
 
   void _setValueInCell({
@@ -118,12 +128,13 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Future<void> _showResetDialog() async {
+  Future<void> _showResetDialog({Widget? content}) async {
     await showCupertinoDialog(
       context: context,
       builder: (context) {
         return CupertinoAlertDialog(
           title: const Text('Начать игру сначала?'),
+          content: content,
           actions: <CupertinoDialogAction>[
             CupertinoDialogAction(
               onPressed: () {
@@ -151,9 +162,39 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  CellValue? _checkWinner() {
+  void _setWinner() {
     CellValue? winner;
 
-    return winner;
+    for (final indexes in _winnerIndexes) {
+      final hasCrossWinner =
+          _checkArrEveryValueIsTheSame(indexes, CellValue.cross);
+      final hasZeroWinner =
+          _checkArrEveryValueIsTheSame(indexes, CellValue.zero);
+
+      if (hasZeroWinner || hasCrossWinner) {
+        winner = _values[indexes.first];
+      }
+    }
+
+    _winner = winner;
+  }
+
+  bool _checkArrEveryValueIsTheSame(List<int> arr, CellValue value) {
+    return arr.fold(
+        [], (prev, curr) => [...prev, _values[curr]]).every((e) => e == value);
+  }
+
+  void _showEndGameAlert() {
+    if (_winner != null) {
+      _showResetDialog(
+          content: Text(
+        '${_winner!.valueName} победили!',
+      ));
+    } else if (_winner == null && _values.every((e) => e != CellValue.none)) {
+      _showResetDialog(
+          content: const Text(
+        'Ничья!',
+      ));
+    }
   }
 }
