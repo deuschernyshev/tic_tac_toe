@@ -4,11 +4,13 @@ import 'package:tic_tac_toe/shared/enums.dart';
 class CellButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final CellValue value;
+  final Border? border;
 
   const CellButton({
     super.key,
     required this.onPressed,
     this.value = CellValue.none,
+    this.border,
   });
 
   @override
@@ -17,7 +19,7 @@ class CellButton extends StatelessWidget {
       onTap: onPressed,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          border: Border.all(),
+          border: border,
         ),
         child: Center(
           child: AnimatedOpacity(
