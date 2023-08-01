@@ -1,16 +1,8 @@
-# tic_tac_toe
+# Крестики Нолики
 
-A new Flutter project.
+Маленький пет-проект на Flutter
 
-## Getting Started
+## О проекте
 
-This project is a starting point for a Flutter application.
+Проект написан на чистом Flutter без использования лишних зависимостей.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
